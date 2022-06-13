@@ -8,4 +8,6 @@ public interface UserMapper {
     UserVO findUserName(String id);
 
     void updatePass(UserVO userVO);
+
+    void insertUser(UserVO userVO);
 }
