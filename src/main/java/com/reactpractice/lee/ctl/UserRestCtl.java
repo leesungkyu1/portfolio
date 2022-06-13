@@ -12,4 +12,10 @@ public class UserRestCtl {
 
     @Autowired
     private AccountService accountService;
+
+    @PostMapping("/loginCheck")
+    public String loginCheck(){
+
+        return "";
+    }
 }

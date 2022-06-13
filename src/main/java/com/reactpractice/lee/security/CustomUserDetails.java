@@ -1,5 +1,6 @@
 package com.reactpractice.lee.security;
 import org.apache.ibatis.javassist.Loader;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class CustomUserDetails implements UserDetails, Serializable {
@@ -16,6 +16,7 @@ public class CustomUserDetails implements UserDetails, Serializable {
     private String id;
     private String pass;
     private String userAuth;
+    private String token;
 
     public int getUserKey() {
         return userKey;
@@ -86,6 +87,14 @@ public class CustomUserDetails implements UserDetails, Serializable {
         return true;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public String toString() {
         return "CustomUserDetails{" +
@@ -93,6 +102,9 @@ public class CustomUserDetails implements UserDetails, Serializable {
                 ", id='" + id + '\'' +
                 ", pass='" + pass + '\'' +
                 ", userAuth='" + userAuth + '\'' +
+                ", token='" + token + '\'' +
                 '}';
     }
+
+
 }

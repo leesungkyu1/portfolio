@@ -16,6 +16,7 @@ public class MainCtl {
     @GetMapping("/")
     public String main(){
 
+        System.out.println("hihi");
         return "blank";
     }
 
