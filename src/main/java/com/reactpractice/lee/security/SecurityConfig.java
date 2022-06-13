@@ -32,7 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/", true)
-                .loginProcessingUrl("/loginCheck")
                 .successHandler(
                         new AuthenticationSuccessHandler() {
                             @Override
@@ -42,8 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
                                 Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                                 UserDetails userDetails = (UserDetails) principal;
-                                System.out.println(userDetails.toString().indexOf("token="));
-                                
+
                                 String token = userDetails.toString().substring(userDetails.toString().indexOf("token="), userDetails.toString().length()-2);
                                 System.out.println("token = " + token);
                             }
