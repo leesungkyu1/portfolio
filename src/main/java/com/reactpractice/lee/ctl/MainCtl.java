@@ -34,4 +34,11 @@ public class MainCtl {
         System.out.println(num);
         return "insert";
     }
+
+    //회원가입 화면
+    @GetMapping("/register")
+    public String userRegister(){
+
+        return "register";
+    }
 }
