@@ -15,7 +15,7 @@ public class CustomUserDetails implements UserDetails, Serializable {
     private int userKey;
     private String id;
     private String pass;
-    private String userAuth;
+    private Collection<? extends GrantedAuthority> userAuth;
     private String token;
 
     public int getUserKey() {
@@ -42,18 +42,18 @@ public class CustomUserDetails implements UserDetails, Serializable {
         this.pass = pass;
     }
 
-    public String getUserAuth() {
+    public Collection<? extends GrantedAuthority> getUserAuth() {
         return userAuth;
     }
 
-    public void setUserAuth(String userAuth) {
+    public void setUserAuth(Collection<? extends GrantedAuthority> userAuth) {
         this.userAuth = userAuth;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("member"));
+        authorityList.add(new SimpleGrantedAuthority("user"));
         return authorityList;
     }
 

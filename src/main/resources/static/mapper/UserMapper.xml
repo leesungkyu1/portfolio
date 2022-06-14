@@ -7,6 +7,11 @@
         <result property="id" column="id"/>
         <result property="pass" column="pass"/>
     </resultMap>
+    <resultMap id="userDetail" type="com.reactpractice.lee.security.CustomUserDetails">
+        <result property="userKey" column="user_key"/>
+        <result property="id" column="id"/>
+        <result property="pass" column="pass"/>
+    </resultMap>
 
     <select id="findUserName" parameterType="String" resultMap="user">
         SELECT * FROM user
@@ -30,4 +35,9 @@
                 #{pass}
                )
     </insert>
+
+    <select id="getUserById" parameterType="int" resultMap="userDetail">
+        SELECT * FROM user
+        WHERE user_key=#{userKey}
+    </select>
 </mapper>

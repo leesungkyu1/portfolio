@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.stream.Stream;
 
 @Service
 public class AccountService implements UserDetailsService {
@@ -21,31 +22,31 @@ public class AccountService implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
     @Override
     public UserDetails loadUserByUsername(String username) {
         CustomUserDetails customUserDetails = new CustomUserDetails();
         try {
 //            String encryptEmail = aes256.encrypt(username);
             UserVO member = userMapper.findUserName(username);
-            System.out.println("member = " + member);
             customUserDetails.setId(username);
             customUserDetails.setPass(member.getPass());
-
-            String jwtToken = jwtTokenProvider.createToken(customUserDetails, member);
-            System.out.println("jwtToken = " + jwtToken);
-            ResponseCookie cookie = ResponseCookie.from("token", jwtToken).httpOnly(true).sameSite("lax").path("/").build();
-            customUserDetails.setToken(jwtToken);
+            customUserDetails.setUserKey(member.getUserKey());
+//            customUserDetails.setUserAuth(customUserDetails.getAuthorities());
+//
+//            System.out.println(customUserDetails.getAuthorities());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return customUserDetails;
+    }
+
+    public UserDetails loadUserByUserKey(String userKey) throws UsernameNotFoundException {
+        CustomUserDetails user = null;
+        user = userMapper.getUserById(Integer.parseInt(userKey));
+        user.setUserAuth(user.getAuthorities());
+
+        return user;
     }
 
 }

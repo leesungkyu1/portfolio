@@ -57,6 +57,8 @@ const board ={
                 contentContainer.removeChild(odd);
             }
 
+            board.funcMan.logout();
+
             data.forEach(el => {
                 let tr = board.funcMan.tagCreater("tr");
                 let title = board.funcMan.tagCreater("td", el.title);
@@ -141,6 +143,15 @@ const board ={
                 }
             })
         },
+
+        logout:()=>{
+            document.querySelector(".dropdown-divider").nextElementSibling.onclick=async()=>{
+                let rqResult = await fetch('/logout');
+                alert("로그아웃에 성공하였습니다!!!");
+                sessionStorage.clear();
+                location.href=await rqResult.url;
+            }
+        }
 
     },
 

@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/board")
 public class BoardRestCtl {
 
     @Autowired
     private BoardService boardService;
 
 
-    @PostMapping(value = "/board")
+    @PostMapping(value = "")
     public String insertBoard(@RequestBody BoardVO boardVO){
         try{
             boardService.insertBoard(boardVO);
@@ -28,20 +28,20 @@ public class BoardRestCtl {
         }
     }
 
-    @GetMapping("/board/list")
+    @GetMapping("/list")
     public List<BoardVO> getBoard(BoardVO boardVO){
         List<BoardVO> boardList = boardService.getBoard(boardVO);
         return boardList;
     }
 
 
-    @GetMapping("/board/{boardKey}")
+    @GetMapping("/{boardKey}")
     public BoardVO boardDetail(@PathVariable("boardKey") int boardKey) {
         BoardVO board = boardService.getBoardDetail(boardKey);
         return board;
     }
 
-    @PutMapping("/board")
+    @PutMapping("")
     public String updateBoard(@RequestBody BoardVO boardVO){
         System.out.println("boardVO = " + boardVO);
 

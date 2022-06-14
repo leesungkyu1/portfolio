@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ChatCtl {
 
-    @Autowired
-    private WebSocket webSocket;
-
-    @GetMapping("/test")
+    @GetMapping("/chat")
     public String chat() {
 
         return "chatting";

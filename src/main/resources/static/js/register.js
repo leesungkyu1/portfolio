@@ -1,23 +1,25 @@
 const register = {
     env:{
-        apiDomain : "/api/register"
+        apiDomain : "/api/user/register"
     },
 
     request:{
-        getReq:async(method, url)=>{
-            let rqResult = await fetch(register.env.apiDomain + url)
+        getReq:async()=>{
+            let rqResult = await fetch(register.env.apiDomain)
 
             return await rqResult.json();
         },
 
-        req:async(data, method, url)=>{
-            let rqResult = await fetch(register.env.apiDomain + url, {
+        req:async(data, method)=>{
+            let rqResult = await fetch(register.env.apiDomain, {
                 method : method,
-                contentType : 'application/json',
+                headers : {
+                    'Content-Type' : 'application/json;charset=utf-8'
+                },
                 body:JSON.stringify(data)
             })
 
-            return await rqResult.json();
+            return rqResult;
         }
     },
     view:{},
@@ -45,13 +47,18 @@ const register = {
     register:()=>{
         let inputList = register.getId("form_tag").querySelectorAll("input");
         let registerBtn = register.getId("registerBtn");
-        registerBtn.onclick=()=>{
+        registerBtn.onclick=async()=>{
             if(register.func.inputCheck(inputList)){
                 let reqData = {};
-                inputList.forEach(input => {
-                    reqData[input.id] = input.value;
-                })
-                register.request.req(reqData, 'POST', "reigster");
+                reqData ={
+                    id : inputList[2].value,
+                    pass : inputList[3].value
+                }
+                let resData = await register.request.req(reqData, 'POST');
+                if(resData.status === 200){
+                    alert("회원가입에 성공하였습니다.");
+                    location.href="/login";
+                }
             }
         }
     }

@@ -1,11 +1,10 @@
 package com.reactpractice.lee.ctl;
 
 
-import com.reactpractice.lee.vo.UserVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Optional;
 
@@ -16,7 +15,6 @@ public class MainCtl {
     @GetMapping("/")
     public String main(){
 
-        System.out.println("hihi");
         return "blank";
     }
 
@@ -40,5 +38,11 @@ public class MainCtl {
     public String userRegister(){
 
         return "register";
+    }
+
+    @GetMapping("/login")
+    public String login(){
+
+        return "login";
     }
 }
