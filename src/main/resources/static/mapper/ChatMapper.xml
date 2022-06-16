@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.reactpractice.lee.dao.ChatMapper">
+    <resultMap id="chatRoom" type="com.reactpractice.lee.chat.ChatRoom">
+        <result property="roomId" column="chat_room_key"/>
+        <result property="name" column="chat_room_name"/>
+    </resultMap>
+
+    <select id="findByRoomId" parameterType="int" resultMap="chatRoom">
+        select * from chat_room WHERE chat_room_key = #{roomId}
+    </select>
+    <select id="findAllRoom"  parameterType="com.reactpractice.lee.chat.ChatRoom" resultMap="chatRoom">
+        select * from chat_room
+    </select>
+</mapper>

@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <title>Insert title here</title>
     <link rel='stylesheet' type='text/css' href='/css/chatt.css'>
+
+    <script	src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 </head>
 <body>
 <div id='chatt'>
     <h1>WebSocket Chatting</h1>
     <input type='text' id='mid' value='홍길동'>
-    <input type='button' value='로그인' id='btnLogin'>
+    <input type='button' value='닉네임 변경' id='change_nick'>
     <br/>
     <div id='talk'></div>
     <div id='sendZone'>
@@ -17,6 +19,10 @@
         <input type='button' value='전송' id='btnSend'>
     </div>
 </div>
-<script src='/js/chatt.js'></script>
+<script src="/js/chatt.js"></script>
+<script src="/js/common.js"></script>
+<script>
+    chat.init("chat", window.location.href);
+</script>
 </body>
 </html>

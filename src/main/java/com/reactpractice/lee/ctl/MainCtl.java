@@ -45,4 +45,10 @@ public class MainCtl {
 
         return "login";
     }
+
+    @GetMapping("/new/room")
+    public String chatMake(){
+        return "chat-room-make";
+    }
+
 }

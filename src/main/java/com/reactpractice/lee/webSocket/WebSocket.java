@@ -1,6 +1,9 @@
 package com.reactpractice.lee.webSocket;
 
 
+import com.reactpractice.lee.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.websocket.OnClose;
@@ -15,11 +18,13 @@ import java.util.Set;
 @Service
 @ServerEndpoint(value="/chatt")
 public class WebSocket {
+
     private static Set<Session> clients = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnMessage //메시지가 수신되었을 때
     public void onMessage(String msg, Session session) throws Exception {
         System.out.println("recive message : " + msg);
+        System.out.println(clients);
         for(Session s : clients){
             System.out.println("send data : " + msg);
             s.getBasicRemote().sendText(msg);
@@ -28,7 +33,7 @@ public class WebSocket {
 
     @OnOpen
     public void onOpen(Session s){
-        System.out.println("open session : " + s.toString());
+        System.out.println("open session : " + s.getId());
         if(!clients.contains(s)){
             clients.add(s);
             System.out.println("session open : " + s);
