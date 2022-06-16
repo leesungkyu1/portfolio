@@ -5,6 +5,7 @@ import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import javax.websocket.OnClose;
 import java.io.IOException;
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class ChatRoom {
         List<WebSocketSession> socketList = new ArrayList<>();
         int roomKey = chatMessageVO.getChatRoomId();
         if(chatMessageVO.getType() == MessageType.ENTER){
-            if(!roomMap.isEmpty() && !roomMap.get(roomKey).isEmpty()){
+            if(!roomMap.isEmpty() && roomMap.containsKey(roomKey)){
                 for(int i=0; i<roomMap.get(roomKey).size(); i++){
                     if(roomMap.get(roomKey).get(i).getPrincipal().getName().equals(chatMessageVO.getId())){
                         roomMap.get(roomKey).remove(i);
@@ -59,6 +60,7 @@ public class ChatRoom {
         System.out.println("roomMap = " + roomMap);
         send(chatMessageVO);
     }
+
 
     private void send(ChatMessageVO chatMessageVO) throws IOException {
         Gson gson = new Gson();

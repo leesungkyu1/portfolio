@@ -3,8 +3,10 @@ ws.onopen=()=>{
     chat.chatOpen();
 }
 
-window.onhashchange=()=>{
-    chat.chatClose();
+ws.onclose=()=>{
+    let reqData = JSON.parse(sessionStorage.getItem("chatInfo"));
+    reqData.type="LEAVE"
+    //작업 필요
 }
 
 const chat ={
@@ -45,6 +47,9 @@ const chat ={
     },
 
     chatList:async()=>{
+        if(ws.onopen){
+            chat.chatClose();
+        }
        let data = await getReq("/chat");
        let chatListContainer = getId("chatListContainer");
        data.forEach(el => {
@@ -74,15 +79,7 @@ const chat ={
     chatOpen:()=>{
         ws.onopen=()=>{
             let reqData = chat.reqObjCreate("","ENTER");
-            ws.send(reqData);
-            chat.chatt();
-        }
-    },
-
-    chatClose:()=>{
-        ws.onclose=(ev)=>{
-            console.log(ev);
-            let reqData = chat.reqObjCreate("", "LEAVE");
+            sessionStorage.setItem("chatInfo", reqData);
             ws.send(reqData);
             chat.chatt();
         }

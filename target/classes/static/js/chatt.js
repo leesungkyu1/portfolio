@@ -3,8 +3,13 @@ ws.onopen=()=>{
     chat.chatOpen();
 }
 
-window.onhashchange=()=>{
-    chat.chatClose();
+ws.onclose=()=>{
+    console.log(ws);
+    console.log("닫았엉");
+    let reqData = JSON.parse(sessionStorage.getItem("chatInfo"));
+    // let reqData = chat.reqObjCreate("", "LEAVE");
+    reqData.type="LEAVE"
+    ws.send(reqData);
 }
 
 const chat ={
@@ -45,6 +50,9 @@ const chat ={
     },
 
     chatList:async()=>{
+        if(ws.onopen){
+            chat.chatClose();
+        }
        let data = await getReq("/chat");
        let chatListContainer = getId("chatListContainer");
        data.forEach(el => {
@@ -74,18 +82,24 @@ const chat ={
     chatOpen:()=>{
         ws.onopen=()=>{
             let reqData = chat.reqObjCreate("","ENTER");
+            sessionStorage.setItem("chatInfo", reqData);
             ws.send(reqData);
             chat.chatt();
         }
     },
 
     chatClose:()=>{
-        ws.onclose=(ev)=>{
-            console.log(ev);
-            let reqData = chat.reqObjCreate("", "LEAVE");
-            ws.send(reqData);
-            chat.chatt();
-        }
+        console.log("close...")
+        console.log(ws);
+        // let reqData = JSON.parse(sessionStorage.getItem("chatInfo"));
+        // // let reqData = chat.reqObjCreate("", "LEAVE");
+        // reqData.type="LEAVE"
+        // console.log(reqData);
+        // ws.onclose=()=>{
+        //     ws.send(reqData);
+        //     console.log("닫음ㅋ");
+        //
+        // }
     },
 
     chatt:()=>{

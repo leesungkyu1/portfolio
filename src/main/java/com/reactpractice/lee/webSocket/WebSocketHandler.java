@@ -1,9 +1,5 @@
 package com.reactpractice.lee.webSocket;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.reactpractice.lee.chat.ChatMessageVO;
 import com.reactpractice.lee.chat.ChatRoom;
 import com.reactpractice.lee.dao.ChatMapper;
@@ -26,8 +22,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         ChatMessageVO chatMessage = (ChatMessageVO) gson.fromJson(message.getPayload(), ChatMessageVO.class);
         ChatRoom chatRoom = chatMapper.findByRoomId(chatMessage.getChatRoomId());
         String userName = session.getPrincipal().getName();
-        System.out.println(chatMessage.getId());
-        System.out.println(userName);
         chatRoom.handleMessage(session, chatMessage);
     }
 }
