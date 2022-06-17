@@ -31,7 +31,14 @@
     </insert>
 
     <select id="getBoard" parameterType="com.reactpractice.lee.vo.BoardVO" resultMap="board">
-        SELECT * FROM board;
+        SELECT
+               *
+        FROM
+             board
+        WHERE 1 = 1
+        <if test="searchKeyword != null and searchKeyword ''">
+            AND title = #{searchKeyword}
+        </if>
     </select>
 
     <select id="getBoardDetail" parameterType="int" resultMap="board">

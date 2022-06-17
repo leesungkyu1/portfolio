@@ -1,7 +1,7 @@
 package com.reactpractice.lee.vo;
 
 
-public class BoardVO {
+public class BoardVO extends Pagination{
     private int boardKey;
     private String title;
     private String content;

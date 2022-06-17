@@ -21,8 +21,14 @@ const board ={
                 location.href='/boards';
             }
         },
-        boardSelect:async()=>{
-            let rqResult = await fetch(board.envMan.apiDomain + "/list");
+        boardSelect:async(page, searchData)=>{
+            let rqResult;
+            if(searchData){
+                rqResult = await fetch(board.envMan.apiDomain + `/list/${searchData.searchKeyword}`)
+            }else{
+                rqResult = await fetch(board.envMan.apiDomain + "/list");
+            }
+
             let result = await rqResult.json();
 
             return result;

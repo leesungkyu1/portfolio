@@ -26,14 +26,11 @@ public class AccountService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         CustomUserDetails customUserDetails = new CustomUserDetails();
         try {
-//            String encryptEmail = aes256.encrypt(username);
             UserVO member = userMapper.findUserName(username);
             customUserDetails.setId(username);
             customUserDetails.setPass(member.getPass());
             customUserDetails.setUserKey(member.getUserKey());
-//            customUserDetails.setUserAuth(customUserDetails.getAuthorities());
-//
-//            System.out.println(customUserDetails.getAuthorities());
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,6 +39,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public UserDetails loadUserByUserKey(String userKey) throws UsernameNotFoundException {
+        System.out.println(userKey);
         CustomUserDetails user = null;
         user = userMapper.getUserById(Integer.parseInt(userKey));
         user.setUserAuth(user.getAuthorities());

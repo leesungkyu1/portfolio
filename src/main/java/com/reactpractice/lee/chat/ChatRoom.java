@@ -1,7 +1,9 @@
 package com.reactpractice.lee.chat;
 
 import com.google.gson.Gson;
+import com.reactpractice.lee.dao.ChatMapper;
 import jdk.swing.interop.SwingInterOpUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -10,6 +12,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class ChatRoom {
+
+    @Autowired
+    ChatMapper chatMapper;
 
     private String roomId;
     private String name;
@@ -56,18 +61,23 @@ public class ChatRoom {
         }else{
             chatMessageVO.setMessage(chatMessageVO.getMessage());
         }
-
-        System.out.println("roomMap = " + roomMap);
         send(chatMessageVO);
     }
 
 
     private void send(ChatMessageVO chatMessageVO) throws IOException {
-        Gson gson = new Gson();
-        TextMessage textMessage = new TextMessage(gson.toJson(chatMessageVO));
-        for(WebSocketSession sess : roomMap.get(chatMessageVO.getChatRoomId())){
-            System.out.println("sess = " + sess);
-            sess.sendMessage(textMessage);
+        int index = 0;
+        try{
+            Gson gson = new Gson();
+            List<WebSocketSession> roomSessions = roomMap.get(chatMessageVO.getChatRoomId());
+            TextMessage textMessage = new TextMessage(gson.toJson(chatMessageVO));
+            for(int i=0; i<roomSessions.size(); i++){
+                roomSessions.get(i).sendMessage(textMessage);
+                index++;
+            }
+            chatMapper.createChatLog(chatMessageVO);
+        }catch (Exception e){
+            roomMap.get(chatMessageVO.getChatRoomId()).remove(index-1);
         }
     }
 }

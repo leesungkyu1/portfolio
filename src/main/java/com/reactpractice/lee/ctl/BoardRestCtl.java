@@ -18,6 +18,8 @@ public class BoardRestCtl {
 
     @PostMapping(value = "")
     public String insertBoard(@RequestBody BoardVO boardVO){
+
+        System.out.println(boardVO);
         try{
             boardService.insertBoard(boardVO);
 

@@ -34,6 +34,28 @@ const chat ={
         }
     },
 
+    reqFileObjCreate:(msg, type, file)=>{
+        let fileReader = new FileReader();
+        fileReader.onload=()=>{
+            console.log(file);
+            let data ={};
+            data.id = getId('mid').value;
+            data.chatRoomId = sessionStorage.getItem("roomId");
+            data.userKey = getId('mid').getAttribute("data-userkey");
+            data.file = file;
+            data.type = type;
+            data.message = msg;
+            data.date = new Date().toLocaleString();
+            let temp = JSON.stringify(data);
+            ws.send(temp);
+            arrayBuffer = fileReader.result;
+            console.log(arrayBuffer);
+            ws.send(arrayBuffer); //파일 소켓 전송
+        }
+        fileReader.readAsArrayBuffer(file);
+    },
+
+
     reqObjCreate:(msg, type)=>{
         let data ={};
         data.id = getId('mid').value;
@@ -47,9 +69,9 @@ const chat ={
     },
 
     chatList:async()=>{
-        if(ws.onopen){
-            chat.chatClose();
-        }
+        // if(ws.onopen){
+        //     chat.chatClose();
+        // }
        let data = await getReq("/chat");
        let chatListContainer = getId("chatListContainer");
        data.forEach(el => {
@@ -122,10 +144,21 @@ const chat ={
 
     send:(msg)=>{
         if(msg.value.trim() != ''){
-            let reqData = chat.reqObjCreate(msg.value,"CHAT");
-            ws.send(reqData);
+            let file = document.querySelector("#fileSelect").files[0];
+            console.log(file);
+            chat.reqFileObjCreate(msg.value,"CHAT", file);
         }
         msg.value ='';
     },
+
+    // send:(msg)=>{
+    //     if(msg.value.trim() != ''){
+    //         let file = document.querySelector("#fileSelect").files[0];
+    //         let reqData = chat.reqObjCreate(msg.value,"CHAT", file);
+    //         ws.send(reqData);
+    //     }
+    //     msg.value ='';
+    // },
 }
+
 
