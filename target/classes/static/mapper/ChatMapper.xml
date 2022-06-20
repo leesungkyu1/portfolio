@@ -61,5 +61,6 @@
         FROM
             chat_room_member
         WHERE user_key_fk = #{userKeyFk}
+            AND chat_room_key_fk = #{chatRoomKeyFk}
     </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.reactpractice.lee.dao.ChatMapper;
 import com.reactpractice.lee.dao.UserMapper;
 import com.reactpractice.lee.vo.UserVO;
 import org.springframework.web.socket.BinaryMessage;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -35,7 +36,6 @@ public class ChatRoom {
     public void handleMessage(WebSocketSession session, ChatMessageVO chatMessageVO, ChatMapper chatMapper, UserMapper userMapper) throws IOException{
         List<WebSocketSession> socketList = new ArrayList<>();
         int roomKey = chatMessageVO.getChatRoomId();
-
         if(chatMessageVO.getType().equals(MessageType.ENTER.toString())){
             if(!roomMap.isEmpty() && roomMap.containsKey(roomKey)){
                 for(int i=0; i<roomMap.get(roomKey).size(); i++){
@@ -48,36 +48,29 @@ public class ChatRoom {
             socketList.add(session);
             roomMap.put(roomKey, socketList);
             chatMessageVO.setMessage(chatMessageVO.getId() + "님이 입장하셨습니다.");
-        }else if(chatMessageVO.getType().equals(MessageType.LEAVE.toString())){
-            socketList.remove(session);
-            roomMap.put(chatMessageVO.getChatRoomId(), socketList);
-            chatMessageVO.setMessage(chatMessageVO.getId() + "님이 퇴장하셨습니다.");
-            if(roomMap.get(chatMessageVO.getChatRoomId()).isEmpty()){
-                roomMap.remove(chatMessageVO.getChatRoomId());
-            }
         }
         if(chatMessageVO.getByteBuffer() != null){
             binarySend(chatMessageVO);
         }else{
             send(chatMessageVO , chatMapper, userMapper);
         }
-
+        System.out.println("roomMap 진입 = " + roomMap);
     }
 
-
     private void send(ChatMessageVO chatMessageVO, ChatMapper chatMapper, UserMapper userMapper) throws IOException {
-            Gson gson = new Gson();
-            List<WebSocketSession> roomSessions = roomMap.get(chatMessageVO.getChatRoomId());
-            TextMessage textMessage = new TextMessage(gson.toJson(chatMessageVO));
-            for(int i=0; i<roomSessions.size(); i++){
-                roomSessions.get(i).sendMessage(textMessage);
-            }
-            UserVO user = userMapper.findUserName(chatMessageVO.getId());
-            if(user != null){
-                ChatMember member = chatMapper.findRoomByUserId(user.getUserKey());
-                chatMessageVO.setChatMemberKeyFk(member.getChatRoomMemberKey());
-                chatMapper.createChatLog(chatMessageVO);
-            }
+        System.out.println(chatMessageVO);
+        Gson gson = new Gson();
+        List<WebSocketSession> roomSessions = roomMap.get(chatMessageVO.getChatRoomId());
+        TextMessage textMessage = new TextMessage(gson.toJson(chatMessageVO));
+        for(int i=0; i<roomSessions.size(); i++){
+            roomSessions.get(i).sendMessage(textMessage);
+        }
+        UserVO user = userMapper.findUserName(chatMessageVO.getId());
+        if(user != null){
+            ChatMember member = chatMapper.findRoomByUserId(user.getUserKey(), chatMessageVO.getChatRoomId());
+            chatMessageVO.setChatMemberKeyFk(member.getChatRoomMemberKey());
+            chatMapper.createChatLog(chatMessageVO);
+        }
     }
 
     private void binarySend(ChatMessageVO chatMessageVO) throws IOException {
@@ -86,6 +79,49 @@ public class ChatRoom {
         List<WebSocketSession> roomSessions = roomMap.get(chatMessageVO.getChatRoomId());
         for(int i=0; i<roomSessions.size(); i++){
             roomSessions.get(i).sendMessage(binaryMessage);
+        }
+    }
+
+    public void handleMessage(WebSocketSession session, CloseStatus status, ChatMapper chatMapper, UserMapper userMapper) throws IOException {
+        if(!roomMap.isEmpty()){
+            Iterator<Integer> keys = roomMap.keySet().iterator();
+            while(keys.hasNext()){
+                Integer roomKey = keys.next();
+                if(roomMap.get(roomKey).contains(session)){
+                    String userName = session.getPrincipal().getName();
+                    roomMap.get(roomKey).remove(session);
+                    if(roomMap.get(roomKey).isEmpty()){
+                        ChatMessageVO chatMessageVO = messageSet(roomKey, "LEAVE", "", userName);
+                        messageSave(chatMessageVO, chatMapper, userMapper);
+                        roomMap.remove(roomKey);
+                    }else{
+                        ChatMessageVO chatMessageVO = messageSet(roomKey, "LEAVE", userName+" 님이 퇴장하셨습니다.", userName);
+                        send(chatMessageVO, chatMapper, userMapper);
+                    }
+                    break;
+                }
+            }
+            System.out.println("roomMap 퇴장 = " + roomMap);
+        }
+    }
+
+    public ChatMessageVO messageSet(int roomId, String type, String message, String userName){
+        ChatMessageVO chatMessageVO = new ChatMessageVO();
+        chatMessageVO.setType(type);
+        chatMessageVO.setChatRoomId(roomId);
+        chatMessageVO.setMessage(message);
+        chatMessageVO.setId(userName);
+        return chatMessageVO;
+    }
+
+    public void messageSave(ChatMessageVO chatMessageVO, ChatMapper chatMapper, UserMapper userMapper){
+        System.out.println("messageSave");
+        System.out.println("chatMessageVO = " + chatMessageVO);
+        UserVO user = userMapper.findUserName(chatMessageVO.getId());
+        if(user != null){
+            ChatMember member = chatMapper.findRoomByUserId(user.getUserKey(), chatMessageVO.getChatRoomId());
+            chatMessageVO.setChatMemberKeyFk(member.getChatRoomMemberKey());
+            chatMapper.createChatLog(chatMessageVO);
         }
     }
 }

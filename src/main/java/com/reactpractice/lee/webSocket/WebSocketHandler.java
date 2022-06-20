@@ -7,10 +7,7 @@ import com.reactpractice.lee.dao.ChatMapper;
 import com.reactpractice.lee.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.BinaryMessage;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import javax.websocket.OnClose;
@@ -59,5 +56,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        System.out.println("session.getPrincipal().getName() = " + session.getPrincipal().getName());
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.handleMessage(session, status, chatMapper, userMapper);
+//        ChatRoom.getRoomMap()
     }
 }

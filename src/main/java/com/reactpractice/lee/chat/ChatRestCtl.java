@@ -17,7 +17,6 @@ public class ChatRestCtl {
 
     @GetMapping("")
     public List<ChatRoom> chatList(ChatRoom chatRoom) {
-        System.out.println("진입");
         List<ChatRoom> chatList = chatMapper.findAllRoom(chatRoom);
 
 

@@ -11,10 +11,9 @@ import java.util.List;
 public interface ChatMapper {
     ChatRoom findByRoomId(int chatRoomId);
 
-
     List<ChatRoom> findAllRoom(ChatRoom chatRoom);
 
     void createChatLog(ChatMessageVO chatMessageVO);
 
-    ChatMember findRoomByUserId(int userKey);
+    ChatMember findRoomByUserId(int userKeyFk, int chatRoomKeyFk);
 }
