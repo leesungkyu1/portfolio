@@ -1,5 +1,6 @@
 package com.reactpractice.lee.dao;
 
+import com.reactpractice.lee.chat.ChatMember;
 import com.reactpractice.lee.chat.ChatMessageVO;
 import com.reactpractice.lee.chat.ChatRoom;
 import org.apache.ibatis.annotations.Mapper;
@@ -14,4 +15,6 @@ public interface ChatMapper {
     List<ChatRoom> findAllRoom(ChatRoom chatRoom);
 
     void createChatLog(ChatMessageVO chatMessageVO);
+
+    ChatMember findRoomByUserId(int userKey);
 }

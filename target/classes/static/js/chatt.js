@@ -6,7 +6,12 @@ ws.onopen=()=>{
 ws.onclose=()=>{
     let reqData = JSON.parse(sessionStorage.getItem("chatInfo"));
     reqData.type="LEAVE"
+    console.log("닫힘");
+    chat.reqObjCreate("", reqData);
     //작업 필요
+}
+ws.onerror=(ev)=>{
+    console.log(ev);
 }
 
 const chat ={
@@ -36,21 +41,22 @@ const chat ={
 
     reqFileObjCreate:(msg, type, file)=>{
         let fileReader = new FileReader();
-        fileReader.onload=()=>{
-            console.log(file);
-            let data ={};
-            data.id = getId('mid').value;
-            data.chatRoomId = sessionStorage.getItem("roomId");
-            data.userKey = getId('mid').getAttribute("data-userkey");
-            data.file = file;
-            data.type = type;
-            data.message = msg;
-            data.date = new Date().toLocaleString();
-            let temp = JSON.stringify(data);
-            ws.send(temp);
+        let arrayBuffer = new ArrayBuffer();
+        let data ={};
+        data.id = getId('mid').value;
+        data.chatRoomId = sessionStorage.getItem("roomId");
+        data.userKey = getId('mid').getAttribute("data-userkey");
+        data.fileYn = true;
+        data.type = type;
+        data.message = msg;
+        data.date = new Date().toLocaleString();
+        let temp = JSON.stringify(data);
+        ws.send(temp);
+        fileReader.onload=async()=>{
             arrayBuffer = fileReader.result;
             console.log(arrayBuffer);
-            ws.send(arrayBuffer); //파일 소켓 전송
+            await ws.send(arrayBuffer); //파일 소켓 전송
+            console.log("전송 완료");
         }
         fileReader.readAsArrayBuffer(file);
     },
@@ -112,23 +118,35 @@ const chat ={
         let msg = getId("msg");
         let btnSend = getId("btnSend");
         let mid = getId("mid");
+        let data = "";
+        let item = "";
+        let cssClass = "";
         ws.onmessage = function(msg){
-            let data = JSON.parse(msg.data);
-            console.log(data);
             let css;
-            if(data.id === mid.value){
-                css = 'class=me';
+            if(typeof msg.data == "string"){
+                data = JSON.parse(msg.data);
+                if(data.id === mid.value){
+                    css = 'class=me';
+                }else{
+                    css = 'class=other';
+                }
+                cssClass = css;
+                item = `<div ${css} >
+                            <span><b>${data.id}</b></span><br/>
+                          <span>${data.message}</span>
+                			</div>`;
+
+                talk.innerHTML += item;
+                talk.scrollTop=talk.scrollHeight;//스크롤바 하단으로 이동
             }else{
-                css = 'class=other';
+                let urlObject = window.URL.createObjectURL(msg.data);
+                item = `<div ${cssClass} >
+                            <img id="test" src="${urlObject}"/>
+                        </div>`;
+
+                talk.innerHTML += item;
             }
 
-            let item = `<div ${css} >
-		                <span><b>${data.id}</b></span><br/>
-                      <span>${data.message}</span>
-						</div>`;
-
-            talk.innerHTML += item;
-            talk.scrollTop=talk.scrollHeight;//스크롤바 하단으로 이동
         }
 
         msg.onkeyup = function(ev){
@@ -145,8 +163,14 @@ const chat ={
     send:(msg)=>{
         if(msg.value.trim() != ''){
             let file = document.querySelector("#fileSelect").files[0];
-            console.log(file);
-            chat.reqFileObjCreate(msg.value,"CHAT", file);
+            // chat.reqFileObjCreate(msg.value,"CHAT", file);
+            let reqData;
+            if(!file){
+                reqData = chat.reqObjCreate(msg.value, "CHAT");
+                ws.send(reqData);
+            }else{
+                chat.reqFileObjCreate(msg.value, "CHAT", file);
+            }
         }
         msg.value ='';
     },

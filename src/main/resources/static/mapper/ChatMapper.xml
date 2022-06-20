@@ -6,30 +6,60 @@
         <result property="name" column="chat_room_name"/>
     </resultMap>
 
+    <resultMap id="chatRoomMember" type="com.reactpractice.lee.chat.ChatMember">
+        <result property="chatRoomMemberKey" column="chat_room_member_key"/>
+        <result property="userKeyFk" column="userKeyFk"/>
+        <result property="type" column="type"/>
+        <result property="chatRoomKeyFk" column="chat_room_key_fk"/>
+    </resultMap>
+
+    <resultMap id="chatMessage" type="com.reactpractice.lee.chat.ChatMessageVO">
+        <result property="chatRoomId" column="chat_room_id"/>
+        <result property="chatMemberKeyFk" column="chat_room_member_key_fk"/>
+        <result property="type" column="type"/>
+        <result property="registerDate" column="register_date"/>
+        <result property="message" column="chat_message"/>
+    </resultMap>
+
     <select id="findByRoomId" parameterType="int" resultMap="chatRoom">
-        select * from chat_room WHERE chat_room_key = #{roomId}
+        select
+               *
+        from
+             chat_room
+        WHERE
+              chat_room_key = #{roomId}
     </select>
-    <select id="findAllRoom"  parameterType="com.reactpractice.lee.chat.ChatRoom" resultMap="chatRoom">
+    <select id="findAllRoom" parameterType="com.reactpractice.lee.chat.ChatRoom" resultMap="chatRoom">
+
+
         select * from chat_room
     </select>
 
-    <insert id="insertChatLog" parameterType="com.reactpractice.lee.chat.ChatMessageVO">?
+    <insert id="createChatLog" parameterType="com.reactpractice.lee.chat.ChatMessageVO">
         INSERT INTO chat
                     (
-                        chat_room_key_fk = ,
-                        user_id = #{userId}
-                            <if test="type == 'chat'">
-                                , chat_message = #{message},
-                            </if>
-                        reigster_date
+                        chat_room_member_key_fk ,
+                        <if test="type == 'CHAT'">
+                            chat_message,
+                        </if>
+                        chat_type,
+                        register_date
                     )
         VALUES (
-                    #{chatRoomId},
-                    #{userId}
-                    <if test="type == 'chat'">
-                        , #{message},
+                    #{chatMemberKeyFk},
+                    <if test="type == 'CHAT'">
+                         #{message},
                     </if>
-                    #{registerDate}
+                    #{type},
+                    default
                )
     </insert>
+
+    <select id="findRoomByUserId" parameterType="int" resultMap="chatRoomMember">
+        SELECT
+            *
+        FROM
+            chat_room_member
+        WHERE user_key_fk = #{userKeyFk}
+    </select>
 </mapper>
