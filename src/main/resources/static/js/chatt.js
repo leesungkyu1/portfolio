@@ -3,11 +3,12 @@ ws.onopen=()=>{
     chat.chatOpen();
 }
 
-ws.onclose=()=>{
+ws.onclose=(ev)=>{
     let reqData = JSON.parse(sessionStorage.getItem("chatInfo"));
     reqData.type="LEAVE"
     console.log("닫힘");
-    chat.reqObjCreate("", reqData);
+    console.log(ev);
+    // chat.reqObjCreate("", reqData);
     //작업 필요
 }
 ws.onerror=(ev)=>{

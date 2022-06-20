@@ -74,7 +74,6 @@ public class ChatRoom {
             }
             UserVO user = userMapper.findUserName(chatMessageVO.getId());
             if(user != null){
-                System.out.println(user.getUserKey());
                 ChatMember member = chatMapper.findRoomByUserId(user.getUserKey());
                 chatMessageVO.setChatMemberKeyFk(member.getChatRoomMemberKey());
                 chatMapper.createChatLog(chatMessageVO);
