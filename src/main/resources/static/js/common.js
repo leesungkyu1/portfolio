@@ -19,7 +19,7 @@ async function req(data, method, url){
         },
         body:JSON.stringify(data)
     })
-    return rqResult;
+    return await rqResult.json();
 }
 
 

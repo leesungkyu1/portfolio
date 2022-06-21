@@ -13,16 +13,25 @@ import java.io.IOException;
 import java.util.*;
 
 public class ChatRoom {
-    private String roomId;
+    private int roomKey;
     private String name;
+    private List<ChatMember> memberList;
     private static Map<Integer , List<WebSocketSession>> roomMap = new HashMap<>();
 
-    public String getRoomId() {
-        return roomId;
+    public List<ChatMember> getMemberList() {
+        return memberList;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setMemberList(List<ChatMember> memberList) {
+        this.memberList = memberList;
+    }
+
+    public int getRoomKey() {
+        return roomKey;
+    }
+
+    public void setRoomKey(int roomKey) {
+        this.roomKey = roomKey;
     }
 
     public String getName() {
@@ -115,8 +124,6 @@ public class ChatRoom {
     }
 
     public void messageSave(ChatMessageVO chatMessageVO, ChatMapper chatMapper, UserMapper userMapper){
-        System.out.println("messageSave");
-        System.out.println("chatMessageVO = " + chatMessageVO);
         UserVO user = userMapper.findUserName(chatMessageVO.getId());
         if(user != null){
             ChatMember member = chatMapper.findRoomByUserId(user.getUserKey(), chatMessageVO.getChatRoomId());

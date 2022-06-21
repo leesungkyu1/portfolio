@@ -3,14 +3,6 @@ ws.onopen=()=>{
     chat.chatOpen();
 }
 
-ws.onclose=(ev)=>{
-    let reqData = JSON.parse(sessionStorage.getItem("chatInfo"));
-    reqData.type="LEAVE"
-    console.log("닫힘");
-    console.log(ev);
-    // chat.reqObjCreate("", reqData);
-    //작업 필요
-}
 ws.onerror=(ev)=>{
     console.log(ev);
 }
@@ -38,6 +30,10 @@ const chat ={
                 alert("새로고침후 다시 시도해주세요");
                 break;
         }
+    },
+
+    userInfo:()=>{
+      return JSON.parse(sessionStorage.getItem("userKey"));
     },
 
     reqFileObjCreate:(msg, type, file)=>{
@@ -76,22 +72,19 @@ const chat ={
     },
 
     chatList:async()=>{
-        // if(ws.onopen){
-        //     chat.chatClose();
-        // }
        let data = await getReq("/chat");
        let chatListContainer = getId("chatListContainer");
+       console.log(data);
        data.forEach(el => {
-            let{name, roomId} = el;
+            let{name, roomKey, memberList} = el;
             let tr = document.createElement("tr");
-            let roomIdTd = tagCreater("td", roomId);
+            let roomIdTd = tagCreater("td", roomKey);
             let nameTd = tagCreater("td", name);
             let btnTd = tagCreater("td");
             let inputBtn = tagCreater("a", "입장하기", "btn");
 
-
             inputBtn.classList.add("btn-primary");
-            inputBtn.href=`/chat/${roomId}`;
+            inputBtn.href=`/chat/${roomKey}`;
 
             btnTd.appendChild(inputBtn);
             tr.appendChild(roomIdTd);
@@ -103,14 +96,37 @@ const chat ={
 
     roomMake:()=>{
         console.log("room Make!!!");
+        let makeBtn = getId("make_room");
+        let title = getId("title");
+        makeBtn.onclick=async()=>{
+            if(!title.value){
+                alert("채팅방 이름을 입력해주세요");
+                return;
+            }
+            let reqData ={title : title.value, userKey : JSON.parse(sessionStorage.getItem("userKey")).userKey};
+            let resData = await req(reqData, "POST", "/chat");
+            if(resData.header.code === "0000"){
+                alert("채팅방 생성에 성공하였습니다.");
+                location.href=`/chat/list`
+            }else{
+                alert("채팅방 생성에 실패하엿습니다.");
+                return;
+            }
+        }
+
     },
 
-    chatOpen:()=>{
-        ws.onopen=()=>{
+    chatOpen:async()=>{
+        ws.onopen=async()=>{
             let reqData = chat.reqObjCreate("","ENTER");
             sessionStorage.setItem("chatInfo", reqData);
             ws.send(reqData);
             chat.chatt();
+
+            let userInfo = chat.userInfo();
+            userInfo.roomKey = sessionStorage.getItem("roomId");
+            let memberJoin = await req(userInfo, "POST", "/chat/join");
+
         }
     },
 
@@ -164,7 +180,6 @@ const chat ={
     send:(msg)=>{
         if(msg.value.trim() != ''){
             let file = document.querySelector("#fileSelect").files[0];
-            // chat.reqFileObjCreate(msg.value,"CHAT", file);
             let reqData;
             if(!file){
                 reqData = chat.reqObjCreate(msg.value, "CHAT");
@@ -175,15 +190,6 @@ const chat ={
         }
         msg.value ='';
     },
-
-    // send:(msg)=>{
-    //     if(msg.value.trim() != ''){
-    //         let file = document.querySelector("#fileSelect").files[0];
-    //         let reqData = chat.reqObjCreate(msg.value,"CHAT", file);
-    //         ws.send(reqData);
-    //     }
-    //     msg.value ='';
-    // },
 }
 
 

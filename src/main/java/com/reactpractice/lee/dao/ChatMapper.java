@@ -16,4 +16,8 @@ public interface ChatMapper {
     void createChatLog(ChatMessageVO chatMessageVO);
 
     ChatMember findRoomByUserId(int userKeyFk, int chatRoomKeyFk);
+
+    int createChatRoom(ChatRoom chatRoom);
+
+    void chatMemberJoin(ChatMember chatMember);
 }
