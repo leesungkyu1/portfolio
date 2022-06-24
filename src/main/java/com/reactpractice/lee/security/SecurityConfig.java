@@ -58,8 +58,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
             .and()
                 .authorizeRequests().antMatchers("/login", "/register", "/resources/**").permitAll()
+                .antMatchers("/chat/list").hasAuthority("user")
                 .antMatchers("/board/**").hasAuthority("user")
                 .antMatchers("/boards").hasAuthority("user")
+                .antMatchers("/chat").hasAuthority("user")
                 .antMatchers("/").hasAuthority("user")
             .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

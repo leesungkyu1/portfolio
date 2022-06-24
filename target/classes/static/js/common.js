@@ -34,4 +34,14 @@ function tagCreater(tag, value , classNames){
     return tagEl;
 }
 
+async function sessionCheck(){
+    let userSession = sessionStorage.getItem("userKey");
+    if(!userSession){
+        let rqResult = await fetch('/logout');
+        alert("재 로그인이 필요합니다.");
+        sessionStorage.clear();
+        location.href=rqResult.url;
+    }
+}
+
 

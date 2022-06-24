@@ -41,7 +41,7 @@ const chat ={
         let arrayBuffer = new ArrayBuffer();
         let data ={};
         data.id = getId('mid').value;
-        data.chatRoomId = sessionStorage.getItem("roomId");
+        data.chatRoomId = JSON.parse(sessionStorage.getItem("roomId"));
         data.userKey = getId('mid').getAttribute("data-userkey");
         data.fileYn = true;
         data.type = type;
@@ -62,7 +62,7 @@ const chat ={
     reqObjCreate:(msg, type)=>{
         let data ={};
         data.id = getId('mid').value;
-        data.chatRoomId = sessionStorage.getItem("roomId");
+        data.chatRoomId = JSON.parse(sessionStorage.getItem("roomId"));
         data.userKey = getId('mid').getAttribute("data-userkey");
         data.type = type;
         data.message = msg;
@@ -113,20 +113,24 @@ const chat ={
                 return;
             }
         }
-
     },
 
     chatOpen:async()=>{
+        sessionCheck();
         ws.onopen=async()=>{
-            let reqData = chat.reqObjCreate("","ENTER");
-            sessionStorage.setItem("chatInfo", reqData);
-            ws.send(reqData);
-            chat.chatt();
-
             let userInfo = chat.userInfo();
             userInfo.roomKey = sessionStorage.getItem("roomId");
             let memberJoin = await req(userInfo, "POST", "/chat/join");
 
+            if(memberJoin.header.code === "0000"){
+                let reqData = chat.reqObjCreate("","ENTER");
+                sessionStorage.setItem("chatInfo", reqData);
+                ws.send(reqData);
+                chat.chatt();
+            }else{
+                alert("채팅방 진입 실패");
+                return;
+            }
         }
     },
 

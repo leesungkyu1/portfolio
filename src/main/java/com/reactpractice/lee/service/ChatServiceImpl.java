@@ -37,7 +37,11 @@ public class ChatServiceImpl implements ChatService{
     public void chatMemberJoin(HashMap<String, Object> map) {
         ChatMember chatMember = new ChatMember();
         chatMember.setUserKeyFk((int)map.get("userKey"));
-        chatMember.setChatRoomKeyFk((int)map.get("roomKey"));
-        
+        chatMember.setChatRoomKeyFk(Integer.parseInt((String) map.get("roomKey")));
+        chatMember.setType("member");
+        ChatMember findMember = chatMapper.findRoomByUserId(chatMember.getUserKeyFk(), chatMember.getChatRoomKeyFk());
+        if(findMember == null){
+            chatMapper.chatMemberJoin(chatMember);
+        }
     }
 }

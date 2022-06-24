@@ -155,7 +155,7 @@ const board ={
                 let rqResult = await fetch('/logout');
                 alert("로그아웃에 성공하였습니다!!!");
                 sessionStorage.clear();
-                location.href=await rqResult.url;
+                location.href=rqResult.url;
             }
         }
 

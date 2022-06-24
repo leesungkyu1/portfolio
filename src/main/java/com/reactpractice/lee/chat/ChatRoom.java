@@ -63,7 +63,6 @@ public class ChatRoom {
         }else{
             send(chatMessageVO , chatMapper, userMapper);
         }
-        System.out.println("roomMap 진입 = " + roomMap);
     }
 
     private void send(ChatMessageVO chatMessageVO, ChatMapper chatMapper, UserMapper userMapper) throws IOException {
@@ -74,12 +73,8 @@ public class ChatRoom {
         for(int i=0; i<roomSessions.size(); i++){
             roomSessions.get(i).sendMessage(textMessage);
         }
-        UserVO user = userMapper.findUserName(chatMessageVO.getId());
-        if(user != null){
-            ChatMember member = chatMapper.findRoomByUserId(user.getUserKey(), chatMessageVO.getChatRoomId());
-            chatMessageVO.setChatMemberKeyFk(member.getChatRoomMemberKey());
-            chatMapper.createChatLog(chatMessageVO);
-        }
+
+        messageSave(chatMessageVO, chatMapper, userMapper);
     }
 
     private void binarySend(ChatMessageVO chatMessageVO) throws IOException {
@@ -110,7 +105,6 @@ public class ChatRoom {
                     break;
                 }
             }
-            System.out.println("roomMap 퇴장 = " + roomMap);
         }
     }
 

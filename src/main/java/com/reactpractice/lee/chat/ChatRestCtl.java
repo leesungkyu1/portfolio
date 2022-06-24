@@ -44,11 +44,8 @@ public class ChatRestCtl {
 
     @PostMapping("/join")
     public ResponseEntity<CommonResponseVO> chatRoomJoin(@RequestBody HashMap<String, Object> joinMap){
-        System.out.println("joinMap = " + joinMap);
 
         chatService.chatMemberJoin(joinMap);
-
-
         return ResponseEntity.ok(CommonResponseVO.defaultResponseVO());
     }
 }
