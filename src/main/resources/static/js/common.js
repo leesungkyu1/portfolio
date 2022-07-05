@@ -34,6 +34,7 @@ function tagCreater(tag, value , classNames){
     return tagEl;
 }
 
+
 async function sessionCheck(){
     let userSession = sessionStorage.getItem("userKey");
     if(!userSession){

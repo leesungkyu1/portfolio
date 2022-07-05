@@ -16,7 +16,37 @@ public class ChatRoom {
     private int roomKey;
     private String name;
     private List<ChatMember> memberList;
+    private int currentMemberCount;
     private static Map<Integer , List<WebSocketSession>> roomMap = new HashMap<>();
+
+
+//    public Map<Integer, Integer> getRoomCurrentCount() {
+//        HashMap<Integer, Integer> memberCount = new HashMap<>();
+//        Iterator<Integer> keys = roomMap.keySet().iterator();
+//        while(keys.hasNext()){
+//            Integer roomKey = keys.next();
+//            memberCount.put(roomKey, roomMap.get(roomKey).size());
+//        }
+//        return memberCount;
+//    }
+
+    public Map<Integer, Integer> roomCurrentCount() {
+        HashMap<Integer, Integer> memberCount = new HashMap<>();
+        Iterator<Integer> keys = roomMap.keySet().iterator();
+        while(keys.hasNext()){
+            Integer roomKey = keys.next();
+            memberCount.put(roomKey, roomMap.get(roomKey).size());
+        }
+        return memberCount;
+    }
+
+    public int getCurrentMemberCount() {
+        return currentMemberCount;
+    }
+
+    public void setCurrentMemberCount(int currentMemberCount) {
+        this.currentMemberCount = currentMemberCount;
+    }
 
     public List<ChatMember> getMemberList() {
         return memberList;
@@ -56,6 +86,7 @@ public class ChatRoom {
             }
             socketList.add(session);
             roomMap.put(roomKey, socketList);
+            System.out.println("zzz"+roomMap);
             chatMessageVO.setMessage(chatMessageVO.getId() + "님이 입장하셨습니다.");
         }
         if(chatMessageVO.getByteBuffer() != null){

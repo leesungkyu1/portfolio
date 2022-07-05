@@ -23,8 +23,6 @@ public class ChatRestCtl {
     @GetMapping("")
     public List<ChatRoom> chatList(ChatRoom chatRoom) {
         List<ChatRoom> chatList = chatService.findAllRoom(chatRoom);
-//        List<ChatRoom> chatList = chatMapper.findAllRoom(chatRoom);
-
 
         return chatList;
     }

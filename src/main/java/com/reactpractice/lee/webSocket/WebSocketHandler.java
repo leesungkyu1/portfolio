@@ -31,7 +31,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
-        System.out.println(message.getPayload());
         Gson gson = new Gson();
         ChatMessageVO chatMessage = (ChatMessageVO) gson.fromJson(message.getPayload(), ChatMessageVO.class);
         ChatRoom chatRoom = chatMapper.findByRoomId(chatMessage.getChatRoomId());
@@ -60,7 +59,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        System.out.println("session.getPrincipal().getName() = " + session.getPrincipal().getName());
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.handleMessage(session, status, chatMapper, userMapper);
 //        ChatRoom.getRoomMap()

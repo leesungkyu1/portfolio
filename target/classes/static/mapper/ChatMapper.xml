@@ -84,4 +84,16 @@
         INSERT INTO chat_room_member
             (user_key_fk, type, chat_room_key_fk) VALUES (#{userKeyFk}, #{type}, #{chatRoomKeyFk});
     </insert>
+
+    <select id="chatMemberCount" parameterType="com.reactpractice.lee.chat.ChatRoom" resultMap="chatRoom">
+        select
+            cr.chat_room_key,
+            cr.chat_room_name,
+            count(crm.chat_room_member_key) as totalMemberCount
+        from
+            chat_room AS cr
+        LEFT JOIN chat_room_member AS crm
+                  ON cr.chat_room_key = crm.chat_room_key_fk
+        group by chat_room_key
+    </select>
 </mapper>

@@ -20,4 +20,6 @@ public interface ChatMapper {
     int createChatRoom(ChatRoom chatRoom);
 
     void chatMemberJoin(ChatMember chatMember);
+
+    List<ChatRoom> chatMemberCount(ChatRoom chatRoom);
 }

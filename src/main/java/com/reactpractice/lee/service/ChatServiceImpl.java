@@ -17,7 +17,18 @@ public class ChatServiceImpl implements ChatService{
 
     @Override
     public List<ChatRoom> findAllRoom(ChatRoom chatRoom) {
-        return chatMapper.findAllRoom(chatRoom);
+        List<ChatRoom> chatRooms = chatMapper.findAllRoom(chatRoom);
+        ChatRoom userList = new ChatRoom();
+        if(userList.roomCurrentCount() != null){
+            for(int roomKey : userList.roomCurrentCount().keySet()){
+                for(int i=0; i<chatRooms.size(); i++){
+                    if(chatRooms.get(i).getRoomKey() == roomKey){
+                        chatRooms.get(i).setCurrentMemberCount(userList.roomCurrentCount().get(roomKey));
+                    }
+                }
+            }
+        }
+        return chatRooms;
     }
 
     @Override

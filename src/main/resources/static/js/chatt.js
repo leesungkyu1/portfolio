@@ -76,20 +76,22 @@ const chat ={
        let chatListContainer = getId("chatListContainer");
        console.log(data);
        data.forEach(el => {
-            let{name, roomKey, memberList} = el;
+            let{name, roomKey, memberList, currentMemberCount} = el;
             let tr = document.createElement("tr");
             let roomIdTd = tagCreater("td", roomKey);
             let nameTd = tagCreater("td", name);
             let btnTd = tagCreater("td");
             let inputBtn = tagCreater("a", "입장하기", "btn");
-
+            let roomMemberTd = tagCreater("td", `${memberList.length}명`);
+            let currentMember = tagCreater("td", `/ ${currentMemberCount}명`);
             inputBtn.classList.add("btn-primary");
             inputBtn.href=`/chat/${roomKey}`;
-
             btnTd.appendChild(inputBtn);
             tr.appendChild(roomIdTd);
             tr.appendChild(nameTd);
             tr.appendChild(btnTd);
+            tr.appendChild(roomMemberTd);
+            tr.appendChild(currentMember);
             chatListContainer.appendChild(tr);
        })
     },
