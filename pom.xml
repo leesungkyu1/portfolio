@@ -127,8 +127,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<warSourceDirectory>src/main/webapp</warSourceDirectory> <!-- war파일 디렉토리 -->
-					<failOnMissingWebXml>false</failOnMissingWebXml> <!-- web.xml이 없을 때 에러를 낼건지 안낼건지 -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 			<plugin>
