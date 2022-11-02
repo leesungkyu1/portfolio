@@ -131,16 +131,6 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml> <!-- web.xml이 없을 때 에러를 낼건지 안낼건지 -->
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>tomcat-maven-plugin</artifactId>
-				<configuration>
-					<url>http://118.67.143.29:9090</url>
-					<path>/</path>
-					<username>admin</username>
-					<password>1234</password>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 </project>
